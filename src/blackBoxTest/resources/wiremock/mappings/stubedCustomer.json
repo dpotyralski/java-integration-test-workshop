@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/customers/1"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "id": 1,
+      "username": "Mr. Bean",
+      "bonusPoints": 20
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

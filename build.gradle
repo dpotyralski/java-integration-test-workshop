@@ -1,0 +1,98 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jvm-test-suite'
+}
+
+group = 'pl.dpotyralski'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+
+        blackBoxTest(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        integrationTest(JvmTestSuite) {
+            dependencies {
+                implementation project
+            }
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+    }
+}
+
+test.dependsOn(integrationTest)
+
+dependencies {
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    compileOnly 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.springfox:springfox-swagger2:2.10.5'
+    implementation 'io.springfox:springfox-swagger-ui:2.10.5'
+
+    implementation 'org.postgresql:postgresql:42.5.0'
+//    implementation 'com.h2database:h2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation(platform('org.junit:junit-bom:5.9.1'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+
+    integrationTestImplementation configurations.implementation
+    integrationTestImplementation configurations.testImplementation
+//    integrationTestImplementation "org.testcontainers:postgresql:1.17.6"
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.17.6'
+    integrationTestImplementation 'com.h2database:h2'
+    integrationTestImplementation 'io.rest-assured:rest-assured:4.5.1'
+    integrationTestImplementation 'org.awaitility:awaitility:4.2.0'
+    integrationTestImplementation "com.github.tomakehurst:wiremock-jre8:2.35.0"
+
+    blackBoxTestImplementation(platform('org.junit:junit-bom:5.9.1'))
+    blackBoxTestImplementation('org.junit.jupiter:junit-jupiter')
+    blackBoxTestImplementation 'org.slf4j:jcl-over-slf4j:2.0.4'
+    blackBoxTestImplementation 'org.slf4j:slf4j-jdk14:2.0.4'
+    blackBoxTestImplementation 'org.slf4j:slf4j-api:2.0.4'
+    blackBoxTestImplementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+    blackBoxTestImplementation 'io.rest-assured:rest-assured:4.5.1'
+
+    blackBoxTestImplementation 'org.testcontainers:testcontainers:1.17.6'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
